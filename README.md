@@ -1,176 +1,61 @@
-# Google Maps for Flutter
+# Flutter plugins
 
-[![pub package](https://img.shields.io/pub/v/google_maps_flutter.svg)](https://pub.dev/packages/google_maps_flutter)
+[![Build Status](https://api.cirrus-ci.com/github/flutter/plugins.svg)](https://cirrus-ci.com/github/flutter/plugins/master)
+[![Release Status](https://github.com/flutter/plugins/actions/workflows/release.yml/badge.svg)](https://github.com/flutter/plugins/actions/workflows/release.yml)
 
-A Flutter plugin that provides a [Google Maps](https://developers.google.com/maps/) widget.
+This repo is a companion repo to the main [flutter
+repo](https://github.com/flutter/flutter). It contains the source code for
+Flutter first-party plugins (i.e., plugins developed by the core Flutter team).
+Check the `packages` directory for all plugins.
 
-|             | Android | iOS    |
-|-------------|---------|--------|
-| **Support** | SDK 20+ | iOS 9+ |
+Flutter plugins enable access to platform-specific APIs. For more information
+about plugins, and how to use them, see
+[https://flutter.dev/platform-plugins/](https://flutter.dev/platform-plugins/).
 
-## Usage
+These plugins are also available on
+[pub](https://pub.dev/flutter/packages).
 
-To use this plugin, add `google_maps_flutter` as a [dependency in your pubspec.yaml file](https://flutter.dev/docs/development/platform-integration/platform-channels).
+## Issues
 
-## Getting Started
+Please file any issues, bugs, or feature requests in the [main flutter
+repo](https://github.com/flutter/flutter/issues/new).
 
-* Get an API key at <https://cloud.google.com/maps-platform/>.
+Issues pertaining to this repository are [labeled
+"plugin"](https://github.com/flutter/flutter/issues?q=is%3Aopen+is%3Aissue+label%3Aplugin).
 
-* Enable Google Map SDK for each platform.
-  * Go to [Google Developers Console](https://console.cloud.google.com/).
-  * Choose the project that you want to enable Google Maps on.
-  * Select the navigation menu and then select "Google Maps".
-  * Select "APIs" under the Google Maps menu.
-  * To enable Google Maps for Android, select "Maps SDK for Android" in the "Additional APIs" section, then select "ENABLE".
-  * To enable Google Maps for iOS, select "Maps SDK for iOS" in the "Additional APIs" section, then select "ENABLE".
-  * Make sure the APIs you enabled are under the "Enabled APIs" section.
+## Contributing
 
-For more details, see [Getting started with Google Maps Platform](https://developers.google.com/maps/gmp-get-started).
+If you wish to contribute a new plugin to the Flutter ecosystem, please
+see the documentation for [developing packages](https://flutter.dev/developing-packages/) and
+[platform channels](https://flutter.dev/platform-channels/). You can store
+your plugin source code in any GitHub repository (the present repo is only
+intended for plugins developed by the core Flutter team). Once your plugin
+is ready, you can [publish](https://flutter.dev/developing-packages/#publish) it
+to the [pub repository](https://pub.dev/).
 
-### Android
+If you wish to contribute a change to any of the existing plugins in this repo,
+please review our [contribution guide](https://github.com/flutter/plugins/blob/master/CONTRIBUTING.md),
+and send a [pull request](https://github.com/flutter/plugins/pulls).
 
-1. Set the `minSdkVersion` in `android/app/build.gradle`:
+## Plugins
+These are the available plugins in this repository.
 
-```groovy
-android {
-    defaultConfig {
-        minSdkVersion 20
-    }
-}
-```
-
-This means that app will only be available for users that run Android SDK 20 or higher.
-
-2. Specify your API key in the application manifest `android/app/src/main/AndroidManifest.xml`:
-
-```xml
-<manifest ...
-  <application ...
-    <meta-data android:name="com.google.android.geo.API_KEY"
-               android:value="YOUR KEY HERE"/>
-```
-
-#### Hybrid Composition
-
-To use [Hybrid Composition](https://flutter.dev/docs/development/platform-integration/platform-views)
-to render the `GoogleMap` widget on Android, set `AndroidGoogleMapsFlutter.useAndroidViewSurface` to
-true.
-
-```dart
-if (defaultTargetPlatform == TargetPlatform.android) {
-  AndroidGoogleMapsFlutter.useAndroidViewSurface = true;
-}
-```
-
-### iOS
-
-To set up, specify your API key in the application delegate `ios/Runner/AppDelegate.m`:
-
-```objectivec
-#include "AppDelegate.h"
-#include "GeneratedPluginRegistrant.h"
-#import "GoogleMaps/GoogleMaps.h"
-
-@implementation AppDelegate
-
-- (BOOL)application:(UIApplication *)application
-    didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-  [GMSServices provideAPIKey:@"YOUR KEY HERE"];
-  [GeneratedPluginRegistrant registerWithRegistry:self];
-  return [super application:application didFinishLaunchingWithOptions:launchOptions];
-}
-@end
-```
-
-Or in your swift code, specify your API key in the application delegate `ios/Runner/AppDelegate.swift`:
-
-```swift
-import UIKit
-import Flutter
-import GoogleMaps
-
-@UIApplicationMain
-@objc class AppDelegate: FlutterAppDelegate {
-  override func application(
-    _ application: UIApplication,
-    didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
-  ) -> Bool {
-    GMSServices.provideAPIKey("YOUR KEY HERE")
-    GeneratedPluginRegistrant.register(with: self)
-    return super.application(application, didFinishLaunchingWithOptions: launchOptions)
-  }
-}
-```
-
-### Both
-
-You can now add a `GoogleMap` widget to your widget tree.
-
-The map view can be controlled with the `GoogleMapController` that is passed to
-the `GoogleMap`'s `onMapCreated` callback.
-
-### Sample Usage
-
-```dart
-import 'dart:async';
-
-import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-
-void main() => runApp(MyApp());
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Google Maps Demo',
-      home: MapSample(),
-    );
-  }
-}
-
-class MapSample extends StatefulWidget {
-  @override
-  State<MapSample> createState() => MapSampleState();
-}
-
-class MapSampleState extends State<MapSample> {
-  Completer<GoogleMapController> _controller = Completer();
-
-  static final CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962),
-    zoom: 14.4746,
-  );
-
-  static final CameraPosition _kLake = CameraPosition(
-      bearing: 192.8334901395799,
-      target: LatLng(37.43296265331129, -122.08832357078792),
-      tilt: 59.440717697143555,
-      zoom: 19.151926040649414);
-
-  @override
-  Widget build(BuildContext context) {
-    return new Scaffold(
-      body: GoogleMap(
-        mapType: MapType.hybrid,
-        initialCameraPosition: _kGooglePlex,
-        onMapCreated: (GoogleMapController controller) {
-          _controller.complete(controller);
-        },
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: _goToTheLake,
-        label: Text('To the lake!'),
-        icon: Icon(Icons.directions_boat),
-      ),
-    );
-  }
-
-  Future<void> _goToTheLake() async {
-    final GoogleMapController controller = await _controller.future;
-    controller.animateCamera(CameraUpdate.newCameraPosition(_kLake));
-  }
-}
-```
-
-See the `example` directory for a complete sample app.
+| Plugin | Pub | Points | Popularity | Likes |
+|--------|-----|--------|------------|-------|
+| [camera](./packages/camera/) | [![pub package](https://img.shields.io/pub/v/camera.svg)](https://pub.dev/packages/camera) | [![pub points](https://badges.bar/camera/pub%20points)](https://pub.dev/packages/camera/score) | [![popularity](https://badges.bar/camera/popularity)](https://pub.dev/packages/camera/score) | [![likes](https://badges.bar/camera/likes)](https://pub.dev/packages/camera/score) |
+| [espresso](./packages/espresso/) | [![pub package](https://img.shields.io/pub/v/espresso.svg)](https://pub.dev/packages/espresso) | [![pub points](https://badges.bar/espresso/pub%20points)](https://pub.dev/packages/espresso/score) | [![popularity](https://badges.bar/espresso/popularity)](https://pub.dev/packages/espresso/score) | [![likes](https://badges.bar/espresso/likes)](https://pub.dev/packages/espresso/score) |
+| [file_selector](./packages/file_selector/) | [![pub package](https://img.shields.io/pub/v/file_selector.svg)](https://pub.dev/packages/file_selector) | [![pub points](https://badges.bar/file_selector/pub%20points)](https://pub.dev/packages/file_selector/score) | [![popularity](https://badges.bar/file_selector/popularity)](https://pub.dev/packages/file_selector/score) | [![likes](https://badges.bar/file_selector/likes)](https://pub.dev/packages/file_selector/score) |
+| [flutter_plugin_android_lifecycle](./packages/flutter_plugin_android_lifecycle/) | [![pub package](https://img.shields.io/pub/v/flutter_plugin_android_lifecycle.svg)](https://pub.dev/packages/flutter_plugin_android_lifecycle) | [![pub points](https://badges.bar/flutter_plugin_android_lifecycle/pub%20points)](https://pub.dev/packages/flutter_plugin_android_lifecycle/score) | [![popularity](https://badges.bar/flutter_plugin_android_lifecycle/popularity)](https://pub.dev/packages/flutter_plugin_android_lifecycle/score) | [![likes](https://badges.bar/flutter_plugin_android_lifecycle/likes)](https://pub.dev/packages/flutter_plugin_android_lifecycle/score) |
+| [google_maps_flutter](./packages/google_maps_flutter) | [![pub package](https://img.shields.io/pub/v/google_maps_flutter.svg)](https://pub.dev/packages/google_maps_flutter) | [![pub points](https://badges.bar/google_maps_flutter/pub%20points)](https://pub.dev/packages/google_maps_flutter/score) | [![popularity](https://badges.bar/google_maps_flutter/popularity)](https://pub.dev/packages/google_maps_flutter/score) | [![likes](https://badges.bar/google_maps_flutter/likes)](https://pub.dev/packages/google_maps_flutter/score) |
+| [google_sign_in](./packages/google_sign_in/) | [![pub package](https://img.shields.io/pub/v/google_sign_in.svg)](https://pub.dev/packages/google_sign_in) | [![pub points](https://badges.bar/google_sign_in/pub%20points)](https://pub.dev/packages/google_sign_in/score) | [![popularity](https://badges.bar/google_sign_in/popularity)](https://pub.dev/packages/google_sign_in/score) | [![likes](https://badges.bar/google_sign_in/likes)](https://pub.dev/packages/google_sign_in/score) |
+| [image_picker](./packages/image_picker/) | [![pub package](https://img.shields.io/pub/v/image_picker.svg)](https://pub.dev/packages/image_picker) | [![pub points](https://badges.bar/image_picker/pub%20points)](https://pub.dev/packages/image_picker/score) | [![popularity](https://badges.bar/image_picker/popularity)](https://pub.dev/packages/image_picker/score) | [![likes](https://badges.bar/image_picker/likes)](https://pub.dev/packages/image_picker/score) |
+| [in_app_purchase](./packages/in_app_purchase/) | [![pub package](https://img.shields.io/pub/v/in_app_purchase.svg)](https://pub.dev/packages/in_app_purchase) | [![pub points](https://badges.bar/in_app_purchase/pub%20points)](https://pub.dev/packages/in_app_purchase/score) | [![popularity](https://badges.bar/in_app_purchase/popularity)](https://pub.dev/packages/in_app_purchase/score) | [![likes](https://badges.bar/in_app_purchase/likes)](https://pub.dev/packages/in_app_purchase/score) |
+| [ios_platform_images](./packages/ios_platform_images/) | [![pub package](https://img.shields.io/pub/v/ios_platform_images.svg)](https://pub.dev/packages/ios_platform_images) | [![pub points](https://badges.bar/ios_platform_images/pub%20points)](https://pub.dev/packages/ios_platform_images/score) | [![popularity](https://badges.bar/ios_platform_images/popularity)](https://pub.dev/packages/ios_platform_images/score) | [![likes](https://badges.bar/ios_platform_images/likes)](https://pub.dev/packages/ios_platform_images/score) |
+| [local_auth](./packages/local_auth/) | [![pub package](https://img.shields.io/pub/v/local_auth.svg)](https://pub.dev/packages/local_auth) | [![pub points](https://badges.bar/local_auth/pub%20points)](https://pub.dev/packages/local_auth/score) | [![popularity](https://badges.bar/local_auth/popularity)](https://pub.dev/packages/local_auth/score) | [![likes](https://badges.bar/local_auth/likes)](https://pub.dev/packages/local_auth/score) |
+| [path_provider](./packages/path_provider/) | [![pub package](https://img.shields.io/pub/v/path_provider.svg)](https://pub.dev/packages/path_provider) | [![pub points](https://badges.bar/path_provider/pub%20points)](https://pub.dev/packages/path_provider/score) | [![popularity](https://badges.bar/path_provider/popularity)](https://pub.dev/packages/path_provider/score) | [![likes](https://badges.bar/path_provider/likes)](https://pub.dev/packages/path_provider/score) |
+| [plugin_platform_interface](./packages/plugin_platform_interface/) | [![pub package](https://img.shields.io/pub/v/plugin_platform_interface.svg)](https://pub.dev/packages/plugin_platform_interface) | [![pub points](https://badges.bar/plugin_platform_interface/pub%20points)](https://pub.dev/packages/plugin_platform_interface/score) | [![popularity](https://badges.bar/plugin_platform_interface/popularity)](https://pub.dev/packages/plugin_platform_interface/score) | [![likes](https://badges.bar/plugin_platform_interface/likes)](https://pub.dev/packages/plugin_platform_interface/score) |
+| [quick_actions](./packages/quick_actions/) | [![pub package](https://img.shields.io/pub/v/quick_actions.svg)](https://pub.dev/packages/quick_actions) | [![pub points](https://badges.bar/quick_actions/pub%20points)](https://pub.dev/packages/quick_actions/score) | [![popularity](https://badges.bar/quick_actions/popularity)](https://pub.dev/packages/quick_actions/score) | [![likes](https://badges.bar/quick_actions/likes)](https://pub.dev/packages/quick_actions/score) |
+| [shared_preferences](./packages/shared_preferences/) | [![pub package](https://img.shields.io/pub/v/shared_preferences.svg)](https://pub.dev/packages/shared_preferences) | [![pub points](https://badges.bar/shared_preferences/pub%20points)](https://pub.dev/packages/shared_preferences/score) | [![popularity](https://badges.bar/shared_preferences/popularity)](https://pub.dev/packages/shared_preferences/score) | [![likes](https://badges.bar/shared_preferences/likes)](https://pub.dev/packages/shared_preferences/score) |
+| [url_launcher](./packages/url_launcher/) | [![pub package](https://img.shields.io/pub/v/url_launcher.svg)](https://pub.dev/packages/url_launcher) | [![pub points](https://badges.bar/url_launcher/pub%20points)](https://pub.dev/packages/url_launcher/score) | [![popularity](https://badges.bar/url_launcher/popularity)](https://pub.dev/packages/url_launcher/score) | [![likes](https://badges.bar/url_launcher/likes)](https://pub.dev/packages/url_launcher/score) |
+| [video_player](./packages/video_player/) | [![pub package](https://img.shields.io/pub/v/video_player.svg)](https://pub.dev/packages/video_player) | [![pub points](https://badges.bar/video_player/pub%20points)](https://pub.dev/packages/video_player/score) | [![popularity](https://badges.bar/video_player/popularity)](https://pub.dev/packages/video_player/score) | [![likes](https://badges.bar/video_player/likes)](https://pub.dev/packages/video_player/score) |
+| [webview_flutter](./packages/webview_flutter/) | [![pub package](https://img.shields.io/pub/v/webview_flutter.svg)](https://pub.dev/packages/webview_flutter) | [![pub points](https://badges.bar/webview_flutter/pub%20points)](https://pub.dev/packages/webview_flutter/score) | [![popularity](https://badges.bar/webview_flutter/popularity)](https://pub.dev/packages/webview_flutter/score) | [![likes](https://badges.bar/webview_flutter/likes)](https://pub.dev/packages/webview_flutter/score) |
